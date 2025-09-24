@@ -1,0 +1,108 @@
+{
+  "model_configurations": {
+    "model_1_yolov3": {
+      "date": "2025-07-10",
+      "architecture": "YOLOv3",
+      "backbone": "darknet-53",
+      "parameters": {
+        "chip_size": 256,
+        "epochs": 10,
+        "batch_size": 4,
+        "learning_rate": null,
+        "validation_split": 0.2,
+        "model_type": "object_detection"
+      },
+      "classes": ["all_symbols"],
+      "results": {
+        "final_map": 0.0,
+        "training_status": "failed",
+        "notes": "Model failed to converge, potential data formatting issues"
+      }
+    },
+    "model_2_fasterrcnn": {
+      "date": "2025-07-10",
+      "architecture": "FasterRCNN",
+      "backbone": "ResNet50",
+      "parameters": {
+        "chip_size": 512,
+        "epochs": 40,
+        "early_stopping": 11,
+        "batch_size": 2,
+        "learning_rate": 0.0001,
+        "validation_split": 0.2,
+        "model_type": "object_detection"
+      },
+      "classes": ["all_symbols"],
+      "results": {
+        "final_map": 0.19,
+        "map_class_61": 0.19,
+        "training_status": "partial_success",
+        "notes": "Some learning observed, but insufficient accuracy for deployment"
+      }
+    },
+    "model_3_fasterrcnn_focused": {
+      "date": "2025-07-15",
+      "architecture": "FasterRCNN",
+      "backbone": "ResNet50",
+      "parameters": {
+        "chip_size": 512,
+        "epochs": 50,
+        "batch_size": 2,
+        "learning_rate": 0.0009,
+        "validation_split": 0.2,
+        "model_type": "object_detection"
+      },
+      "classes": ["GREG", "DCCO"],
+      "results": {
+        "final_map": "in_progress",
+        "training_status": "ongoing",
+        "notes": "Focused on specific species symbols, reduced complexity"
+      }
+    }
+  },
+  "recommended_parameters": {
+    "optimal_configuration": {
+      "architecture": "FasterRCNN",
+      "backbone": "ResNet50",
+      "chip_size": 256,
+      "learning_rate": 0.0001,
+      "validation_split": 0.15,
+      "epochs": "30-50",
+      "batch_size": "2-4",
+      "early_stopping": true,
+      "monitor_metric": "mAP"
+    },
+    "data_preprocessing": {
+      "image_format": "TIFF",
+      "coordinate_system": "NAD83_Louisiana_South",
+      "annotation_format": "ESRI_Shapefile",
+      "augmentation": "geometric_only",
+      "normalization": "standard_imagenet"
+    },
+    "training_strategy": {
+      "transfer_learning": true,
+      "pretrained_weights": "COCO",
+      "fine_tuning_approach": "full_network",
+      "loss_function": "combined_classification_regression",
+      "optimizer": "adam"
+    }
+  },
+  "evaluation_metrics": {
+    "primary_metrics": [
+      "mean_average_precision",
+      "precision_at_50_iou",
+      "recall_at_50_iou"
+    ],
+    "secondary_metrics": [
+      "training_loss",
+      "validation_loss",
+      "convergence_speed"
+    ],
+    "success_criteria": {
+      "minimum_map": 0.5,
+      "minimum_precision": 0.7,
+      "minimum_recall": 0.6,
+      "stable_convergence": true
+    }
+  }
+}
